@@ -1,5 +1,5 @@
 from tastypie.resources import ModelResource
-from evento.models import TipoInscricao
+from evento.models import TipoInscricao, Pessoa
 from django.contrib.auth.models import User
 
 
@@ -13,3 +13,10 @@ class UserResource(ModelResource):
     class Meta:
         queryset = User.objects.all()
         resource_name = 'user'
+
+################################################
+class PessoaResource(ModelResource):
+    class Meta:
+        queryset = Pessoa.objects.all()
+        resource_name = 'p'
+        allowed_methods = ['get']
