@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
-
+#__1
 class Evento(models.Model):
     nome = models.CharField('nome', max_length=200)
     eventoPrincipal = models.CharField('eventoPrincipal', max_length=200)
@@ -24,14 +24,14 @@ class Evento(models.Model):
     def __str__(self):
         return '{}'.format(self.nome)
 
-
+#__2
 class EventoCientifico(Evento):
     issn = models.CharField('issn', max_length=200)
 
     def __str__(self):
         return '{}'.format(self.issn)
 
-
+#__3
 class Pessoa(models.Model):
     nome = models.CharField('nome', max_length=200)
     email = models.CharField('email', max_length=200)
@@ -39,14 +39,14 @@ class Pessoa(models.Model):
     def __str__(self):
         return '{}'.format(self.nome)
 
-
+#__
 class PessoaFisica(Pessoa):
     cpf = models.CharField('cpf', max_length=20)
 
     def __str__(self):
         return '{}'.format(self.cpf)
 
-
+#__4
 class PessoaJuridica(Pessoa):
     cnpj = models.CharField('cnpj', max_length=100)
     razaoSocial = models.CharField('razaoSocial', max_length=200)
@@ -54,14 +54,14 @@ class PessoaJuridica(Pessoa):
     def __str__(self):
         return '{}'.format(self.cnpj)
 
-
+#__5
 class Autor(Pessoa):
     curriculo = models.CharField('curriculo', max_length=200)
 
     def __str__(self):
         return '{}'.format(self.curriculo)
 
-
+#__6
 class ArtigoCientifico(models.Model):
     titulo = models.CharField('titulo', max_length=200)
     evento = models.ForeignKey('EventoCientifico')
@@ -69,7 +69,7 @@ class ArtigoCientifico(models.Model):
     def __str__(self):
         return '{}'.format(self.titulo)
 
-
+#__7
 class Inscricoes(models.Model):
     pessoa = models.ForeignKey('PessoaFisica')
     evento = models.ForeignKey('Evento')
@@ -79,14 +79,14 @@ class Inscricoes(models.Model):
     def __str__(self):
         return '{}'.format(self.pessoa)
 
-
+#__8
 class TipoInscricao(models.Model):
     descricao = models.CharField('descricao', max_length=200)
 
     def __str__(self):
         return '{}'.format(self.descricao)
 
-
+#__9
 class ArtigoAutor(models.Model):
     artigoCientifico = models.ForeignKey('ArtigoCientifico')
     autor = models.ForeignKey('Autor')
