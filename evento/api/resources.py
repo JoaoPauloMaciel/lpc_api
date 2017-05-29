@@ -65,54 +65,72 @@ class EventoResource(ModelResource):
             "descricao": ('exact', 'startswith',)
         }
 
-class InscricaoResource(ModelResource):
 
-    pessoa = fields.ToOneField(PessoaResource, 'pessoa')
-    evento = fields.ToOneField(EventoResource, 'evento')
-    tipoinscricao = fields.ToOneField(TipoInscricaoResource, 'tipoInscricao')
-
-    def obj_create(self, bundle, **kwargs):
-        inscP = bundle.data['pessoa'].split("/")
-        inscE = bundle.data['evento'].split("/")
-        inscT = bundle.data['tipoinscricao'].split("/")
-        print(inscP[4], inscE[4], inscT[4])
-
-        tipo=Inscricoes()
-        tipo.pessoa = PessoaFisica.objects.get(pk = int(inscP[4]))
-        tipo.evento = Evento.objects.get(pk = int(inscE[4]))
-        tipo.tipoInsc = TipoInscricao.objects.get(pk = int(inscT[4]))
-
-        #print(tipo.tipoInsc)
-
-        if Inscricoes.objects.filter(pessoa = inscP[4]).exists() and  Inscricoes.objects.filter(evento = inscE[4]).exists():
-            raise Unauthorized ('Já existe Inscricao com esse nome!')
-
-        else:
-
-            tipo.save()
-            bundle.obj=tipo
-        return bundle
-
-        def obj_delete_list(self, bundle, **kwargs):
-            #print (bunble.date)
-            raise Unauthorized ('Ação invalida! Não altorizado para realuzar está ação.')
-
-
+class PessoaFisicaResource(ModelResource):
     class Meta:
-        queryset = Inscricoes.objects.all()
+        queryset = PessoaFisica.objects.all()
         allowed_methods = ['get', 'post', 'delete', 'put']
         authorization = Authorization()
         filtering = {
             "descricao": ('exact', 'startswith',)
         }
 
+class InscricaoResource(ModelResource):
+
+    pessoa = fields.ToOneField(PessoaFisicaResource, 'pessoa')
+    evento = fields.ToOneField(EventoResource, 'evento')
+    tipoinscricao = fields.ToOneField(TipoInscricaoResource, 'tipoInscricao')
+
+    def obj_create(self, bundle, **kwargs):
+        p= bundle.data['pessoa'].split("/")
+        e= bundle.data['evento'].split("/")
+
+        if not (Inscricoes.objects.filter(pessoa=p[4],evento=e[4])):
+            t=bundle.data['tipo'].split("/")
+
+            insc=Inscricoes()
+            insc.pessoa = PessoaFisica.objects.get(pk = int(inscP[4]))
+            insc.evento = Evento.objects.get(pk = int(inscE[4]))
+            insc.tipoInsc = TipoInscricao.objects.get(pk = int(inscT[4]))
+            insc.dataEHoraDaInsc =  bundle.data["dataEHoraDaInscricao"]
+
+            insc.save()
+            bundle.obj=insc
+            return bundle
+
+        else:
+            raise Unauthorized ('Já existe Inscricao com esse nome!')
 
 
+        #inscP = bundle.data['pessoa'].split("/")
+        #inscE = bundle.data['evento'].split("/")
+        #inscT = bundle.data['tipoinscricao'].split("/")
+        #print(inscP[-2], inscE[-2], inscT[-2])
+        #print(bundle)
 
-#3
-class PessoaFisicaResource(ModelResource):
+        #if Inscricoes.objects.filter(pessoa = inscP[-2]).exists() and  Inscricoes.objects.filter(evento = inscE[-2]).exists():
+        #if not Inscricoes.objects.filter(pessoa_id = inscP[4],evento_id = inscE[4]).exists():
+        #    raise Unauthorized ('Já existe Inscricao com esse nome!')
+
+        #else:
+        #    tipo=Inscricoes()
+        #    tipo.pessoa = PessoaFisica.objects.get(pk = int(inscP[4]))
+        #    tipo.evento = Evento.objects.get(pk = int(inscE[4]))
+        #    tipo.tipoInsc = TipoInscricao.objects.get(pk = int(inscT[4]))
+        #    tipo.dataEHoraDaInsc =  bundle.data["dataEHoraDaInscricao"]
+            #print(tipo.tipoInsc)
+
+        #    tipo.save()
+        #    bundle.obj=tipo
+        return bundle
+
+    def obj_delete_list(self, bundle, **kwargs):
+            #print (bunble.date)
+            raise Unauthorized ('Ação invalida! Não altorizado para realuzar está ação.')
+
+
     class Meta:
-        queryset = PessoaFisica.objects.all()
+        queryset = Inscricoes.objects.all()
         allowed_methods = ['get', 'post', 'delete', 'put']
         authorization = Authorization()
         filtering = {
