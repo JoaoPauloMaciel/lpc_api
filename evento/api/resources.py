@@ -84,14 +84,14 @@ class InscricaoResource(ModelResource):
     def obj_create(self, bundle, **kwargs):
         p= bundle.data['pessoa'].split("/")
         e= bundle.data['evento'].split("/")
+        t= bundle.data['tipoinscricao'].split("/")
 
         if not (Inscricoes.objects.filter(pessoa=p[4],evento=e[4])):
-            t=bundle.data['tipo'].split("/")
 
             insc=Inscricoes()
-            insc.pessoa = PessoaFisica.objects.get(pk = int(inscP[4]))
-            insc.evento = Evento.objects.get(pk = int(inscE[4]))
-            insc.tipoInsc = TipoInscricao.objects.get(pk = int(inscT[4]))
+            insc.pessoa = PessoaFisica.objects.get(pk = int(p[4]))
+            insc.evento = Evento.objects.get(pk = int(e[4]))
+            insc.tipoInsc = TipoInscricao.objects.get(pk = int(t[4]))
             insc.dataEHoraDaInsc =  bundle.data["dataEHoraDaInscricao"]
 
             insc.save()
@@ -122,7 +122,7 @@ class InscricaoResource(ModelResource):
 
         #    tipo.save()
         #    bundle.obj=tipo
-        return bundle
+        #return bundle
 
     def obj_delete_list(self, bundle, **kwargs):
             #print (bunble.date)
